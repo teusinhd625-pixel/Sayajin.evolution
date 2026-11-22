@@ -21,6 +21,17 @@ jobs:
           cp index.html www/index.html
       - run: npm install
       - run: npx cap add android
+      - name: Aplicar logo como ícone
+        run: |
+          L=logo_sayajin_evolution.png
+          for s in mdpi:48:108 hdpi:72:162 xhdpi:96:216 xxhdpi:144:324 xxxhdpi:192:432; do
+            IFS=: read d i f <<< "$s"
+            D=android/app/src/main/res/mipmap-$d
+            convert $L -resize ${i}x${i} $D/ic_launcher.png
+            convert $L -resize ${i}x${i} $D/ic_launcher_round.png
+            convert $L -resize $((f*62/100))x$((f*62/100)) -background '#0b0b0d' -gravity center -extent ${f}x${f} $D/ic_launcher_foreground.png
+          done
+          printf '<?xml version="1.0" encoding="utf-8"?><resources><color name="ic_launcher_background">#0B0B0D</color></resources>' > android/app/src/main/res/values/ic_launcher_background.xml
       - run: npx cap sync android
       - name: Gerar APK
         run: |
