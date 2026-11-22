@@ -19,7 +19,19 @@ jobs:
         run: |
           mkdir -p www
           cp HIPER.html www/index.html
-      - run: npm install
+      - name: Criar projeto Capacitor
+        run: |
+          npm init -y
+          npm install @capacitor/core@6 @capacitor/android@6
+          npm install -D @capacitor/cli@6
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.sayajin.evolution",
+            "appName": "Sayajin Evolution",
+            "webDir": "www",
+            "server": { "androidScheme": "https" }
+          }
+          EOF
       - run: npx cap add android
       - name: Aplicar logo como ícone
         run: |
